@@ -36,7 +36,7 @@ export default options => Target => class extends Component {
     // 该方法在页面浏览器端渲染时会调用
     // 在浏览器端动态添加reducer
     const { store, match, location: { query } } = this.props;
-    const { reducer, promise } = options;
+    const { promise } = options;
     if (!promise) {
       throw new Error('getInitialProps must pass in an object containing the key "promise"');
     }
