@@ -1,6 +1,7 @@
 /* eslint react/no-did-mount-set-state: 0 */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { SSR_REQ_TAG } from './util';
 
 /**
  * 页面组件渲染前获取数据的装饰器
@@ -39,7 +40,11 @@ export default options => Target => class extends Component {
     if (!promise) {
       throw new Error('getInitialProps must pass in an object containing the key "promise"');
     }
-    await promise({ store, match, query });
+    const { [SSR_REQ_TAG]: ssrReqTag } = store.getState();
+    // 如果服务器端已经进行过渲染，在客户端则不再进行数据请求
+    if (!ssrReqTag) {
+      await promise({ store, match, query });
+    }
   }
 
   /**

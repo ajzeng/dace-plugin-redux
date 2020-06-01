@@ -3,6 +3,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import mergeable from 'redux-merge-reducers';
 import axiosInstance from 'dace/dist/runtime/axiosInstance';
+import { SSR_REQ_TAG } from './util';
 
 /**
  * 创建 store
@@ -30,8 +31,10 @@ export default (req) => {
   const middlewares = [thunk.withExtraArgument(axiosInstance)]
     .concat(require('./reduxMiddlewares'));
 
+  const initState = isClient ? {} : { [SSR_REQ_TAG]: true };
+
   // 初始化使用的默认 reducer
-  const initialReducer = (state = {}) => state;
+  const initialReducer = (state = initState) => state;
   const store = createStore(
     initialReducer,
     initialState,
